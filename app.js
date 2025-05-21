@@ -8,13 +8,6 @@ const PORT = 9000; // Porta TCP do servidor HTTP da aplicação
 // Variáveis usadas no EJS (padrão)
 let config = { titulo: "", rodape: "", dados: [] };
 
-// config.dados = [
-//   { username: "User 1", email: "x1@x.com", celular: "(19) 99999-9999" },
-//   { username: "User 2", email: "x2@x.com", celular: "(20) 99999-9999" },
-//   { username: "User 3", email: "x3@x.com", celular: "(21) 99999-9999" },
-//   { username: "User 4", email: "x4@x.com", celular: "(22) 99999-9999" },
-// ];
-
 const app = express(); // Instância para uso do Express
 
 // Cria conexão com obanco de dados
@@ -31,9 +24,9 @@ db.serialize(() => {
 // Configuração para uso de sessão (cookies) com Express
 app.use(
   session({
-    secret: "qualquersenha",
-    resave: true,
-    saveUninitialized: true,
+    secret: "qualquersenha", // chave de criptografia da sessão
+    resave: true, // reseta a sessão a cada requisição
+    saveUninitialized: true, // salva a sessão mesmo que não tenha sido inicializada
   })
 );
 
@@ -51,13 +44,11 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // Configurar EJS como o motor de visualização
 app.set("view engine", "ejs");
 
-
 const index =
   "<a href='/sobre'> Sobre </a><a href='/login'> Login </a><a href='/cadastro'> Cadastrar </a>";
 const sobre = "sobre";
 const login = 'Vc está na página "Login"<br><a href="/">Voltar</a>';
 const cadastro = 'Vc está na página "Cadastro"<br><a href="/">Voltar</a>';
-
 
 /* Método express.get necessita de dois parâmetros 
  Na ARROW FUNCTION, o primeiro são os dados do servidor (REQUISITION - 'req')
@@ -65,7 +56,7 @@ const cadastro = 'Vc está na página "Cadastro"<br><a href="/">Voltar</a>';
 
 app.get("/", (req, res) => {
   // Rota raiz do meu servidor, acesse o browser com o endereço http://localhost:8000/
-  // res.send(index);
+
   console.log(`GET /index`);
 
   config = {
@@ -73,17 +64,16 @@ app.get("/", (req, res) => {
     rodape: "",
   };
 
-  // config.rodape = "1";
-  // res.render("pages/index", { titulo: config.titulo, req: req });
-  // console.log({ ...config, req: req });
   res.render("pages/index", { ...config, req: req });
   // res.redirect("/cadastro"); // Redireciona para a ROTA cadastro
 });
 
 app.get("/usuarios", (req, res) => {
-  const query = "SELECT * FROM users";
+  // Rota para listar os usuários
+  const query = "SELECT * FROM users"; // SQL para selecionar todos os usuários
   db.all(query, (err, row) => {
-    if (err) throw err;
+    // Executa o SQL
+    if (err) throw err; // Se houver erro, lança uma exceção
 
     console.log(`GET /usuarios ${JSON.stringify(row)}`);
     // res.send("Lista de usuários.");
@@ -114,10 +104,10 @@ app.post("/cadastro", (req, res) => {
   // 2. saber se ele já existe no banco
   const query =
     // "SELECT * FROM users WHERE email=? OR cpf=? OR rg=? OR username=?";
-    "SELECT * FROM users WHERE username=?";
+    "SELECT * FROM users WHERE email=? OR cpf=? OR rg=? OR celular OR username=?";
 
   // db.get(query, [email, cpf, rg, username], (err, row) => {
-  db.get(query, [username], (err, row) => {
+  db.get(query, [email, cpf, rg, celular, username], (err, row) => {
     if (err) throw err;
     console.log(`LINHA RETORNADA do SELECT USER: ${JSON.stringify(row)}`);
     if (row) {
@@ -149,7 +139,7 @@ app.get("/sobre", (req, res) => {
 });
 
 app.get("/logout", (req, res) => {
-  console.log("GET /logout")
+  console.log("GET /logout");
   // Exemplo de uma rota (END POINT) controlado pela sessão do usuário logado.
   req.session.destroy(() => {
     res.redirect("/");
@@ -164,12 +154,20 @@ app.get("/login", (req, res) => {
 
 app.get("/register_failed", (req, res) => {
   console.log("GET /register_failed");
-  res.render("pages/fail", { ...config, req: req, msg: "<a href='/cadastro'>Cadastro inválido</a>" });
+  res.render("pages/fail", {
+    ...config,
+    req: req,
+    msg: "<a href='/cadastro'>Cadastro inválido</a>",
+  });
 });
 
 app.get("/invalid_login", (req, res) => {
   console.log("GET /invalid_login");
-  res.render("pages/fail", { ...config, req: req, msg: "Usuário e senha inválida!!!" });
+  res.render("pages/fail", {
+    ...config,
+    req: req,
+    msg: "Usuário e senha inválida!!!",
+  });
 });
 
 app.post("/login", (req, res) => {
@@ -200,7 +198,11 @@ app.get("/dashboard", (req, res) => {
   if (req.session.loggedin) {
     db.all("SELECT * FROM users", [], (err, row) => {
       if (err) throw err;
-      res.render("pages/dashboard", { titulo: "DASHBOARD", dados: row, req: req });
+      res.render("pages/dashboard", {
+        titulo: "DASHBOARD",
+        dados: row,
+        req: req,
+      });
     });
   } else {
     console.log("Tentativa de acesso a àrea restrita");
@@ -208,9 +210,11 @@ app.get("/dashboard", (req, res) => {
   }
 });
 
-app.use('*', (req, res) => {
+app.use("*", (req, res) => {
   // Envia uma resposta de erro 404
-  res.status(404).render('pages/fail', { titulo: "ERRO 404", req: req, msg: "404" });
+  res
+    .status(404)
+    .render("pages/fail", { titulo: "ERRO 404", req: req, msg: "404" });
 });
 
 // app.listen() deve ser o último comando da aplicação (app.js)
