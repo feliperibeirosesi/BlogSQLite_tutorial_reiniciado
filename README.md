@@ -3,7 +3,7 @@
 >_Utilizado no curso Técnico de Desenvolvimento de Sistemas - SESI "chalil zabani" CE 436 - Nova Odessa - SP_  
 ---  
 ## Instalação do projeto
-1- Instalar o [Nodej](https://nodejs.org/en/download) de acordo com o sistema operacional.
+1- Instalar o [Nodejs](https://nodejs.org/en/download) de acordo com o sistema operacional.
 
 2- Clonar o repositório com [Git](https://www.notion.so/Anota-es-do-Senai-f35c51c354d542a49738fb58edc55bd1#1e53661cdaa180a09c73f5fd2a979b4d) ou qualquer outro aplicativo de versionamento.
 
