@@ -104,7 +104,7 @@ app.post("/cadastro", (req, res) => {
   // 2. saber se ele já existe no banco
   const query =
     // "SELECT * FROM users WHERE email=? OR cpf=? OR rg=? OR username=?";
-    "SELECT * FROM users WHERE email=? OR cpf=? OR rg=? OR celular OR username=?";
+    "SELECT * FROM users WHERE email=? OR cpf=? OR rg=? OR celular=? OR username=?";
 
   // db.get(query, [email, cpf, rg, username], (err, row) => {
   db.get(query, [email, cpf, rg, celular, username], (err, row) => {
