@@ -5,9 +5,11 @@
 ## Instalação do projeto
 1- Instalar o [Nodejs](https://nodejs.org/en/download) de acordo com o sistema operacional.
 
-2- Clonar o repositório com [Git](https://www.notion.so/Anota-es-do-Senai-f35c51c354d542a49738fb58edc55bd1#1e53661cdaa180a09c73f5fd2a979b4d) ou qualquer outro aplicativo de versionamento.
+2- Clonar o repositório com [Git](https://git-scm.com/downloads) ou qualquer outro aplicativo de versionamento.
 
-3- Instalar os módulos utilizados pelo aplicativo (```npm install```)  
+3- Ter um editor de código de sua preferencia como o [VsCode](https://code.visualstudio.com/) ou outro de sua preferencia.
+
+4- Instalar os módulos utilizados pelo aplicativo (```npm install```)  
 
 5- Executar o aplicativo: node  ```app.js```
 
@@ -42,7 +44,7 @@
 - Nodejs - v18.17.1  
 ---
 ### Autores:
-**Felipe José** **Felipe Ribeiro** **Sarah Emanuelly** **Thayna** 
+**Felipe José,** **Felipe Ribeiro,** **Sarah Emanuelly,** **Thayna** 
 
 _Escola SESI "chalil zabani" CE 436 - Nova Odessa - SP_   
 
