@@ -60,8 +60,8 @@
 
 - [ ] Adicionar comentários explicando o que cada tag faz em todos os arquivos `.ejs`.
 - [ ] Remover código comentado desnecessário:
-  - `index.ejs`: linhas 5, 7–16 e 30–119.
-  - `app.js`: linhas 11–16, 76–78, 80, 89–91.
+  - `index.ejs`: linhas 5, 7 a 16 e 30 a 119.
+  - `app.js`: linhas 11 a 16, 76 a 78, 80, 89 a 91.
   - `partials/head.ejs`: remover comentários nas linhas 9 e 10.
   - `partials/usertable.ejs`: remover comentários nas linhas 14, 15 e 26.
 - [ ] Corrigir `console.log` retornando `undefined` na página `register_failed`.
