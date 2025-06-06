@@ -21,6 +21,8 @@ db.serialize(() => {
   );
 });
 
+app.use(express.json()); // Middleware para processar JSON no body das requisições
+
 // Configuração para uso de sessão (cookies) com Express
 app.use(
   session({
@@ -85,7 +87,7 @@ app.get("/usuarios", (req, res) => {
 
 // GET Cadastro
 app.get("/cadastro", (req, res) => {
-  console.log("GET /cadastro");
+  console.log("GET /cadastro - recebido");
   // Rota raiz do meu servidor, acesse o browser com o endereço http://localhost:8000/cadastro
   res.render("pages/cadastro", { titulo: "CADASTRO", req: req });
 });
@@ -175,21 +177,48 @@ app.post("/login", (req, res) => {
   const { username, password } = req.body;
 
   // Consultar o usuario no banco de dados
-  const query = "SELECT * FROM users WHERE username = ? AND password = ?";
-  db.get(query, [username, password], (err, row) => {
-    if (err) throw err;
-
-    // Se usuário válido -> registra a sessão e redireciona para o dashboard
-    if (row) {
-      req.session.loggedin = true;
-      req.session.username = username;
-      res.redirect("/dashboard");
-    } // Se não, envia mensagem de erro (Usuário inválido)
-    else {
-      res.redirect("/invalid_login");
-    }
-  });
+  const (checkUserQuery) = "SELECT * FROM users WHERE username = ? OR email = ?";
+db.get(checkUserQuery), [username, email], (err, row) => {
+if (err) {
+console.error("Erro ao consultar o banco (verificar usuirio):", err.message);
+//não envie o erro detalhado do banco para o cliente por seguranca
+return res.status(500).json({
+success: false,
+message: "Erro interno do servidor ao verificar usuario."
 });
+}
+console.log("Resultado da consulta de usuirio existente:", row);
+if (row) { 
+// Usubrio j& existe
+let conflictField = "";
+if (row.username === username) {
+  conflictField = "Nome de usuário";
+} else if (row.email === email) {
+conflictField = "Email";
+}
+return res.status(409).json({ // 409 Conflict
+success: false,
+message: `${conflictrield} já cadastrado. Por favor, escolha outro.`
+});
+} else {
+  const insertQuery =
+    "INSERT INTO users (username, password, email, celular, cpf, rg) VALUES (?, ?, ?, ?, ?, ?)";
+  db.run(
+    insertQuery,
+    [username, password, email, celular, cpf, rg],
+    function (err) {
+      if (err) {
+        console.error("Erro ao inserir usuário:", err.message);
+        return res.status(500).json({
+          success: false,
+          message: "Erro interno do servidor ao cadastrar usuário.",
+        });
+      }
+      console.log(`Usuario ${username} cadastrado com ID: ${this.lastID}`);
+      return res.status(201).json({
+    }
+}
+
 
 app.get("/dashboard", (req, res) => {
   console.log("GET /dashboard", req.status);
