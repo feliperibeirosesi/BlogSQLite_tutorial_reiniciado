@@ -73,7 +73,7 @@
   - `views/pages/404.ejs`
   - `hellowoeld.ejs` na raiz
   - `rotas.ejs` na raiz
-- [ ] Corrigir uso duplicado de páginas de erro (`404.ejs` vs `fail.ejs`).
+- [ ] Corrigir uso duplicado de páginas de erro `404.ejs`  `fail.ejs`.
 
 ---
 
