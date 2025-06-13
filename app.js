@@ -59,14 +59,22 @@ app.get("/cadastro", (req, res) => {
 
 app.post("/cadastro", (req, res) => {
   console.log("POST /cadastro");
-  !req.body
-    ? console.log(`Body vazio: ${req.body}`)
-    : console.log(JSON.stringify(req.body));
+  if (!req.body || Object.keys(req.body).length === 0) {
+    console.error("corpo da requisicão vazio.");
+    return res
+      .status(400)
+      .json({ success: false, message: "Nenhum dado recebido." });
+  }
+  console.log("Corpo da requisição:", JSON.stringify(req.body, null, 2));
 
   const { username, password, email, celular, cpf, rg } = req.body;
 
-  const query =
-    "SELECT * FROM users WHERE email=? OR cpf=? OR rg=? OR celular=? OR username=?";
+  if (!username || !password || !email) {
+    return res.status(400).json({
+      success: false,
+      message: "Nome Senha e email são obrigatorios.",
+    });
+  }
 
   db.get(query, [email, cpf, rg, celular, username], (err, row) => {
     if (err) throw err;
@@ -173,13 +181,11 @@ app.get("/invalid_login", (req, res) => {
 });
 
 app.use("*", (req, res) => {
-  res
-    .status(404)
-    .render("pages/fail", {
-      titulo: "ERRO 404",
-      req,
-      msg: "404 - Página não encontrada",
-    });
+  res.status(404).render("pages/fail", {
+    titulo: "ERRO 404",
+    req,
+    msg: "404 - Página não encontrada",
+  });
 });
 
 app.listen(PORT, () => {

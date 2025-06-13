@@ -27,34 +27,25 @@ const checkNome = () => {
 };
 
 /* ------ Verifica se o email tem domínio válido ------ */
-const checkEmail = (email) => {
-  const partesEmail = email.split("@");
-
-  if (
-    (partesEmail.length === 2 &&
-      partesEmail[1].toLowerCase() === "gmail.com") ||
-    (partesEmail.length === 2 &&
-      partesEmail[1].toLowerCase() === "outlook.com") ||
-    (partesEmail.length === 2 && partesEmail[1].toLowerCase() === "hotmail.com")
-  ) {
-    return true;
-  } else {
-    return false;
-  }
-};
+const checkEmail = (emailvalue) => {
+  const emailTrimmed = emailvalue.trim();
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Verifica formato básico de email
 if (!emailRegex.test(emailTrimmed)) {
   return false; // Formato inválido
 }
-
-return (
-  partesEmail.length === 2 &&
-  ["gmail.com", "outlook.com", "hotmail.com"].includes(
-    partesEmail[1].toLowerCase()
-  )
-);
-
+const partesEmail = emailTrimmed.split("@");
+if (partesEmail.length !== 2) {
+  const domain = partesEmail[1].tolowerCase();
+  cnst allowedDomains = [
+    "gmail.com",
+    "hotmail.com",
+    "outlook.com",
+    "yahoo.com",
+  ];
+  return true;
+}
+return false;
 /* ------ Verifica se as senhas digitadas são iguais ------ */
 function checkPasswordMatch() {
   return senha.value === confirmarSenha.value;
@@ -192,38 +183,38 @@ async function fetchDatas(event) {
     console.log("Erro ao enviar os dados:", error);
     createDisplayMsgError("Erro de conexão, por favor, tente novamente.");
   }
+
+  /* ------ Adiciona escutadores de evento nos campos ------ */
+
+  // Valida o nome em tempo real
+  nome.addEventListener("input", () => {
+    if (nome.value && !checkNome()) {
+      createDisplayMsgError(
+        "O nome não pode conter números ou caracteres especiais!"
+      );
+    } else {
+      createDisplayMsgError("");
+    }
+  });
+
+  // Valida o e-mail em tempo real
+  partesEmail.addEventListener("input", () => {
+    if (partesEmail.value && !checkEmail(partesEmail.value)) {
+      createDisplayMsgError("O e-mail digitado não é válido!");
+    } else {
+      createDisplayMsgError("");
+    }
+  });
+
+  // Valida a força da senha em tempo real
+  senha.addEventListener("input", () => {
+    if (senha.value && checkPasswordStrength(senha.value)) {
+      createDisplayMsgError(checkPasswordStrength(senha.value));
+    } else {
+      createDisplayMsgError("");
+    }
+  });
+
+  // Evento de envio do formulário
+  formulario.addEventListener("submit", fetchDatas);
 }
-
-/* ------ Adiciona escutadores de evento nos campos ------ */
-
-// Valida o nome em tempo real
-nome.addEventListener("input", () => {
-  if (nome.value && !checkNome()) {
-    createDisplayMsgError(
-      "O nome não pode conter números ou caracteres especiais!"
-    );
-  } else {
-    createDisplayMsgError("");
-  }
-});
-
-// Valida o e-mail em tempo real
-partesEmail.addEventListener("input", () => {
-  if (partesEmail.value && !checkEmail(partesEmail.value)) {
-    createDisplayMsgError("O e-mail digitado não é válido!");
-  } else {
-    createDisplayMsgError("");
-  }
-});
-
-// Valida a força da senha em tempo real
-senha.addEventListener("input", () => {
-  if (senha.value && checkPasswordStrength(senha.value)) {
-    createDisplayMsgError(checkPasswordStrength(senha.value));
-  } else {
-    createDisplayMsgError("");
-  }
-});
-
-// Evento de envio do formulário
-formulario.addEventListener("submit", fetchDatas);
